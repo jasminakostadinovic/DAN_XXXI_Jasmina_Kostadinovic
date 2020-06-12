@@ -93,7 +93,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                     case 3:
                         try
                         {
-                            var newClient = new tblOrder();
+                            var newOrder = new tblOrder();
                             var db = new DataAccess();
                             var meals = db.LoadMeals();
 
@@ -104,6 +104,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                 continue;
                             }
                             bool stopOrdering = false;
+                            var orderedMeals = new Dictionary<tblMeal, int>();
                             do
                             {
                                 stopOrdering = false;
@@ -132,6 +133,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                     stopOrdering = true;
                                     continue;
                                 }
+                                orderedMeals.Add(meal, int.Parse(numberOfMeal));
                                 Console.WriteLine("Would you like to order more meals?");
                                 var moreMeals = CheckToContinue();
                                 if (numberOfMeal == "#")
@@ -155,11 +157,31 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             }
                             while (!stopOrdering);
 
+                            Console.WriteLine("Enter the address for delivering:");
                             var addressInput = GetAddress();
 
+                            if (addressInput == "#")
+                            {
+                                shouldRepeat = true;
+                                continue;
+                            }
+                            newOrder.AddressOfRecipient = addressInput;
+                            newOrder.DateOfOrder = DateTime.Now;
                             
-                      
-                            
+                            newOrder.Price = CalculatePrice(orderedMeals);
+
+                            db.AddNewOrder(newOrder);
+                            var orders = db.LoadOrders();
+                            var idOrder = orders.Last().OrderID;
+
+                            Console.WriteLine($"You have successfully created new order with id {idOrder}");
+                            Console.WriteLine("Your order include:");
+                            var no = 1;
+                            foreach (var meal in orderedMeals)
+                            {
+                                Console.WriteLine($"{no}. {meal.Key.Name} - {meal.Value} times");
+                                no++;
+                            }
                         }
                      
                         catch (Exception ex)
@@ -239,7 +261,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
             } while (shouldRepeat);
         }
 
-        private object GetAddress()
+        private string GetAddress()
         {
             string consoleInput = string.Empty;
             bool shouldRepeat;
@@ -349,6 +371,19 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                 shouldRepeat = false;
             } while (shouldRepeat);
             return consoleInput;
+        }
+
+        public decimal CalculatePrice(Dictionary<tblMeal, int> meals)
+        {
+            if (!meals.Any())
+                return 0;
+            decimal? sum = 0;
+            foreach (var m in meals)
+            {
+                sum = m.Key.Price * m.Value;
+            }
+            return (decimal)sum;
+
         }
     }
 }

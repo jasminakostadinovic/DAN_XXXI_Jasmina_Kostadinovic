@@ -75,6 +75,7 @@
     <Compile Include="Model\tblMealOrder.cs">
       <DependentUpon>ModelRestaurant.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tblMealOrder2.cs" />
     <Compile Include="Model\tblOrder.cs">
       <DependentUpon>ModelRestaurant.tt</DependentUpon>
     </Compile>

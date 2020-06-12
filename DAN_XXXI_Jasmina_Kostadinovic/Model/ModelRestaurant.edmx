@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="RestaurantModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tblMeal">
+          <Key>
+            <PropertyRef Name="MealID" />
+          </Key>
+          <Property Name="MealID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="tblMealOrder">
+          <Key>
+            <PropertyRef Name="MealOrderID" />
+          </Key>
+          <Property Name="MealOrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MealID" Type="int" Nullable="false" />
+          <Property Name="OrderID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tblOrder">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DateOfOrder" Type="datetime" />
+          <Property Name="AddressOfRecipient" Type="nvarchar" MaxLength="100" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <Association Name="FK__tblMealOr__MealI__4BAC3F29">
+          <End Role="tblMeal" Type="Self.tblMeal" Multiplicity="1" />
+          <End Role="tblMealOrder" Type="Self.tblMealOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblMeal">
+              <PropertyRef Name="MealID" />
+            </Principal>
+            <Dependent Role="tblMealOrder">
+              <PropertyRef Name="MealID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblMealOr__Order__4CA06362">
+          <End Role="tblOrder" Type="Self.tblOrder" Multiplicity="1" />
+          <End Role="tblMealOrder" Type="Self.tblMealOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblOrder">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="tblMealOrder">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RestaurantModelStoreContainer">
+          <EntitySet Name="tblMeal" EntityType="Self.tblMeal" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblMealOrder" EntityType="Self.tblMealOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblOrder" EntityType="Self.tblOrder" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__tblMealOr__MealI__4BAC3F29" Association="Self.FK__tblMealOr__MealI__4BAC3F29">
+            <End Role="tblMeal" EntitySet="tblMeal" />
+            <End Role="tblMealOrder" EntitySet="tblMealOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblMealOr__Order__4CA06362" Association="Self.FK__tblMealOr__Order__4CA06362">
+            <End Role="tblOrder" EntitySet="tblOrder" />
+            <End Role="tblMealOrder" EntitySet="tblMealOrder" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RestaurantModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tblMeal">
+          <Key>
+            <PropertyRef Name="MealID" />
+          </Key>
+          <Property Name="MealID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="tblMealOrders" Relationship="Self.FK__tblMealOr__MealI__4BAC3F29" FromRole="tblMeal" ToRole="tblMealOrder" />
+        </EntityType>
+        <EntityType Name="tblMealOrder">
+          <Key>
+            <PropertyRef Name="MealOrderID" />
+          </Key>
+          <Property Name="MealOrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MealID" Type="Int32" Nullable="false" />
+          <Property Name="OrderID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tblMeal" Relationship="Self.FK__tblMealOr__MealI__4BAC3F29" FromRole="tblMealOrder" ToRole="tblMeal" />
+          <NavigationProperty Name="tblOrder" Relationship="Self.FK__tblMealOr__Order__4CA06362" FromRole="tblMealOrder" ToRole="tblOrder" />
+        </EntityType>
+        <EntityType Name="tblOrder">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DateOfOrder" Type="DateTime" Precision="3" />
+          <Property Name="AddressOfRecipient" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="tblMealOrders" Relationship="Self.FK__tblMealOr__Order__4CA06362" FromRole="tblOrder" ToRole="tblMealOrder" />
+        </EntityType>
+        <Association Name="FK__tblMealOr__MealI__4BAC3F29">
+          <End Role="tblMeal" Type="Self.tblMeal" Multiplicity="1" />
+          <End Role="tblMealOrder" Type="Self.tblMealOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblMeal">
+              <PropertyRef Name="MealID" />
+            </Principal>
+            <Dependent Role="tblMealOrder">
+              <PropertyRef Name="MealID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tblMealOr__Order__4CA06362">
+          <End Role="tblOrder" Type="Self.tblOrder" Multiplicity="1" />
+          <End Role="tblMealOrder" Type="Self.tblMealOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tblOrder">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="tblMealOrder">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RestaurantEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tblMeals" EntityType="Self.tblMeal" />
+          <EntitySet Name="tblMealOrders" EntityType="Self.tblMealOrder" />
+          <EntitySet Name="tblOrders" EntityType="Self.tblOrder" />
+          <AssociationSet Name="FK__tblMealOr__MealI__4BAC3F29" Association="Self.FK__tblMealOr__MealI__4BAC3F29">
+            <End Role="tblMeal" EntitySet="tblMeals" />
+            <End Role="tblMealOrder" EntitySet="tblMealOrders" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tblMealOr__Order__4CA06362" Association="Self.FK__tblMealOr__Order__4CA06362">
+            <End Role="tblOrder" EntitySet="tblOrders" />
+            <End Role="tblMealOrder" EntitySet="tblMealOrders" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RestaurantModelStoreContainer" CdmEntityContainer="RestaurantEntities">
+          <EntitySetMapping Name="tblMeals">
+            <EntityTypeMapping TypeName="RestaurantModel.tblMeal">
+              <MappingFragment StoreEntitySet="tblMeal">
+                <ScalarProperty Name="MealID" ColumnName="MealID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblMealOrders">
+            <EntityTypeMapping TypeName="RestaurantModel.tblMealOrder">
+              <MappingFragment StoreEntitySet="tblMealOrder">
+                <ScalarProperty Name="MealOrderID" ColumnName="MealOrderID" />
+                <ScalarProperty Name="MealID" ColumnName="MealID" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblOrders">
+            <EntityTypeMapping TypeName="RestaurantModel.tblOrder">
+              <MappingFragment StoreEntitySet="tblOrder">
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="DateOfOrder" ColumnName="DateOfOrder" />
+                <ScalarProperty Name="AddressOfRecipient" ColumnName="AddressOfRecipient" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

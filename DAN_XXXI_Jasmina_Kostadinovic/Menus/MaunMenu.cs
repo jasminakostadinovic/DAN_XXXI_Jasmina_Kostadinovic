@@ -42,12 +42,8 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             }
                             foreach (var m in mealOrder)
                             {
-                                Console.WriteLine("Meal with order number " + m.MealOrderID + " ordered on " + m.tblOrder.DateOfOrder + " to be delivered to adress " + m.tblOrder.AddressOfRecipient + " contains:");
-                                foreach (var item in m.tblOrder.tblMealOrders)
-                                {
-                                    Console.Write(item.tblMeal.Name);
-                                    Console.Write("/");
-                                }
+                                Console.WriteLine("Meal with order number " + m.MealOrderID + " ordered on " + m.tblOrder.DateOfOrder + " to be delivered to adress " + m.tblOrder.AddressOfRecipient);
+         
                             }
                         }
                       
@@ -74,12 +70,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             {
                                 mealOrder = context.tblMealOrders.Include("tblMeal.tblOrder").Where(m => m.MealOrderID == orderID).FirstOrDefault();
                             }
-                            Console.WriteLine("Meal with order number " + mealOrder.MealOrderID + " ordered on " + mealOrder.tblOrder.DateOfOrder + " to be delivered to adress " + mealOrder.tblOrder.AddressOfRecipient + " contains:");
-                            foreach (var item in mealOrder.tblOrder.tblMealOrders)
-                            {
-                                Console.Write(item.tblMeal.Name);
-                                Console.Write("/");
-                            }
+                            Console.WriteLine("Meal with order number " + mealOrder.MealOrderID + " ordered on " + mealOrder.tblOrder.DateOfOrder + " to be delivered to adress " + mealOrder.tblOrder.AddressOfRecipient);
                         }
 
                         catch (Exception ex)

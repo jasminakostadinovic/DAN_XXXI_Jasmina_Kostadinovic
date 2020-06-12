@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAN_XXXI_Jasmina_Kostadinovic.Menus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,10 @@ namespace DAN_XXXI_Jasmina_Kostadinovic
     {
         static void Main(string[] args)
         {
+            var mainMenu = new MaunMenu();
+            mainMenu.CreateMenu();
+
+            Console.ReadLine();
         }
     }
 }

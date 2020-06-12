@@ -11,9 +11,8 @@ namespace DAN_XXXI_Jasmina_Kostadinovic
     {
         static void Main(string[] args)
         {
-            var mainMenu = new MaunMenu();
-            mainMenu.CreateMenu();
-
+            MaunMenu mm = new MaunMenu();
+            mm.CreateMenu();
             Console.ReadLine();
         }
     }

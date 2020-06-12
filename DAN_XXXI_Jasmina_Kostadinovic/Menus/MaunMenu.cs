@@ -89,6 +89,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                 if (inputForMealNo == "#")
                                 {
                                     shouldRepeat = true;
+                                    stopOrdering = true;
                                     continue;
                                 }
                                 var mealIndex = int.Parse(inputForMealNo) - 1;
@@ -99,6 +100,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                 if (numberOfMeal == "#")
                                 {
                                     shouldRepeat = true;
+                                    stopOrdering = true;
                                     continue;
                                 }
                                 Console.WriteLine("Would you like to order more meals?");
@@ -106,6 +108,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                 if (numberOfMeal == "#")
                                 {
                                     shouldRepeat = true;
+                                    stopOrdering = true;
                                     continue;
                                 }
                                 if(moreMeals == "yes")
@@ -122,6 +125,8 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                 stopOrdering = true;
                             }
                             while (!stopOrdering);
+
+                            
                       
                             
                         }

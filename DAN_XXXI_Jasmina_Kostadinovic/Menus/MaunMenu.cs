@@ -42,7 +42,8 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             }
                             foreach (var m in mealOrder)
                             {
-                                Console.WriteLine("Meal with order number " + m.MealOrderID + " ordered on " + m.tblOrder.DateOfOrder + " to be delivered to adress " + m.tblOrder.AddressOfRecipient + " costs " + m.tblOrder.Price);
+                                Console.WriteLine("Meal with order number " + m.MealOrderID + " ordered on " + m.tblOrder.DateOfOrder + " to be delivered to adress " + m.tblOrder.AddressOfRecipient);
+         
                             }
                         }
                       
@@ -69,7 +70,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             {
                                 mealOrder = context.tblMealOrders.Include("tblMeal.tblOrder").Where(m => m.MealOrderID == orderID).FirstOrDefault();
                             }
-                            Console.WriteLine("Meal with order number " + mealOrder.MealOrderID + " ordered on " + mealOrder.tblOrder.DateOfOrder + " to be delivered to adress " + mealOrder.tblOrder.AddressOfRecipient + " costs " + mealOrder.tblOrder.Price);
+                            Console.WriteLine("Meal with order number " + mealOrder.MealOrderID + " ordered on " + mealOrder.tblOrder.DateOfOrder + " to be delivered to adress " + mealOrder.tblOrder.AddressOfRecipient);
                         }
 
                         catch (Exception ex)
@@ -83,7 +84,71 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                     case 3:
                         try
                         {
+                            var newClient = new tblOrder();
+                            var db = new DataAccess();
+                            var meals = db.LoadMeals();
 
+                            if (!meals.Any())
+                            {
+                                Console.WriteLine("Unfortunately, we are unable to receive any order at the moment.");
+                                shouldRepeat = true;
+                                continue;
+                            }
+                            bool stopOrdering = false;
+                            do
+                            {
+                                stopOrdering = false;
+                                Console.WriteLine("Please, enter the serial number of the meal you would like to order:");
+                                int serialNo = 1;
+                                foreach (var item in meals)
+                                {
+                                    Console.WriteLine($"{serialNo}. {item.Name}");
+                                    serialNo++;
+                                }
+                                var inputForMealNo = GetMealNo(serialNo);
+                                if (inputForMealNo == "#")
+                                {
+                                    shouldRepeat = true;
+                                    stopOrdering = true;
+                                    continue;
+                                }
+                                var mealIndex = int.Parse(inputForMealNo) - 1;
+                                var meal = meals[mealIndex];
+                                Console.WriteLine($"Enter the number of meal {meal.Name}");
+
+                                var numberOfMeal = GetNumberOfMeal(meal.Name);
+                                if (numberOfMeal == "#")
+                                {
+                                    shouldRepeat = true;
+                                    stopOrdering = true;
+                                    continue;
+                                }
+                                Console.WriteLine("Would you like to order more meals?");
+                                var moreMeals = CheckToContinue();
+                                if (numberOfMeal == "#")
+                                {
+                                    shouldRepeat = true;
+                                    stopOrdering = true;
+                                    continue;
+                                }
+                                if(moreMeals == "yes")
+                                {
+                                    stopOrdering = false;
+                                    meals.Remove(meal);
+                                    if (!meals.Any())
+                                    {
+                                        stopOrdering = true;
+                                        Console.WriteLine("There are no more meals on the menu.");
+                                    }
+                                    continue;
+                                }
+                                stopOrdering = true;
+                            }
+                            while (!stopOrdering);
+
+                            
+                      
+                            
                         }
                      
                         catch (Exception ex)
@@ -97,6 +162,72 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                     case 4:
                         try
                         {
+                            DataAccess da = new DataAccess();
+                          
+                            bool success = false;
+                            int ID;
+                            do
+                            {
+                                Console.WriteLine("ID of order you want to update");
+                                success = Int32.TryParse(Console.ReadLine(), out ID);
+
+                                if (!success)
+                                {
+                                    Console.WriteLine("invalid input");
+                                }
+                            } while (!success);
+
+                            tblOrder updateOrder = da.LoadOrder(ID);
+
+                            if (updateOrder == null)
+                            {
+                                Console.WriteLine("There is no order with this ID");
+                            }
+
+                          List <tblMeal> meals = da.LoadMeals();
+
+                          
+                            foreach (var meal in meals)
+                            {
+                                Console.WriteLine(meal.MealID + " " + meal.Name + " " + meal.Price);
+                            }
+                            int mealId;
+                            string answer;
+
+                            do
+                            {
+                                Console.WriteLine("Chose meal ID:");
+                                tblMeal mealToAdd = new tblMeal();
+                                do
+                                {
+
+                                    success = Int32.TryParse(Console.ReadLine(), out mealId);
+
+                                    if (!success)
+                                    {
+                                        Console.WriteLine("invalid input");
+                                    }
+                                    if (success)
+                                    {
+                                        mealToAdd = da.LoadMeal(mealId);
+                                        if (mealToAdd == null)
+                                        {
+                                            Console.WriteLine("Meal with this id doesnt exist");
+                                        }
+                                        else
+                                        {
+                                            tblMealOrder mealOrder = new tblMealOrder();
+                                            mealOrder.tblMeal = mealToAdd;
+                                            mealOrder.tblOrder = updateOrder;
+                                            updateOrder.tblMealOrders.Add(mealOrder);
+                                        }
+                                    }
+                                } while (!success || mealToAdd == null);
+                                Console.WriteLine("You ordered {0}", mealToAdd);
+                                Console.WriteLine("Do you want to order something else? y/n");
+                                answer = Console.ReadLine();
+                            } while (answer.Equals("y")||answer.Equals("Y"));
+                           
 
                         }
                   
@@ -161,6 +292,94 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                         break;
                 }
             } while (shouldRepeat);
+        }
+
+        private string CheckToContinue()
+        {
+            string consoleInput = string.Empty;
+            string lowerInput = string.Empty;
+            bool shouldRepeat;
+            do
+            {
+                shouldRepeat = false;
+                Console.WriteLine(">>>To get back to the menu press '#' + ENTER<<<");
+                consoleInput = Console.ReadLine();
+                lowerInput = consoleInput.ToLower();
+                //if the customer has chosen to abort the action
+                if (lowerInput == "#")
+                    continue;
+
+                if (lowerInput != "yes" && lowerInput != "no")
+                {
+                    Console.WriteLine($"Wrong input! Plese try again.");
+                    shouldRepeat = true;
+                    continue;
+                }
+                shouldRepeat = false;
+            } while (shouldRepeat);
+            return lowerInput;
+        }
+
+        private string GetNumberOfMeal(string name)
+        {
+            string consoleInput;
+            bool shouldRepeat;
+            do
+            {
+                shouldRepeat = false;
+                Console.WriteLine(">>>To get back to the menu press '#' + ENTER<<<");
+                consoleInput = Console.ReadLine();
+                if (consoleInput == "#")
+                    continue;
+                if (!int.TryParse(consoleInput, out int inputNumber))
+                {
+                    Console.WriteLine("Wrong input! Please try again.");
+                    shouldRepeat = true;
+                    continue;
+                }
+                if (inputNumber < 1 )
+                {
+                    Console.WriteLine("You must order at least one meal. Please try again.");
+                    shouldRepeat = true;
+                    continue;
+                }
+                if (inputNumber > 20)
+                {
+                    Console.WriteLine("Maximum number of orders is 20. Please try again.");
+                    shouldRepeat = true;
+                    continue;
+                }
+                shouldRepeat = false;
+            } while (shouldRepeat);
+            return consoleInput;
+        }
+
+        private string GetMealNo(int serialNo)
+        {
+            string consoleInput;
+            bool shouldRepeat;
+            do
+            {
+                shouldRepeat = false;
+                Console.WriteLine(">>>To get back to the menu press '#' + ENTER<<<");
+                consoleInput = Console.ReadLine();
+                if (consoleInput == "#")
+                    continue;
+                if (!int.TryParse(consoleInput, out int inputNumber))
+                {
+                    Console.WriteLine("Wrong input! Please try again.");
+                    shouldRepeat = true;
+                    continue;
+                }
+                if(inputNumber < 1 || inputNumber > serialNo - 1)
+                {
+                    Console.WriteLine("Wrong input! Please try again.");
+                    shouldRepeat = true;
+                    continue;
+                }
+                shouldRepeat = false;
+            } while (shouldRepeat);
+            return consoleInput;
         }
     }
 }

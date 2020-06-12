@@ -96,6 +96,21 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.DBHaendlers
             }
         }
 
+
+        public void RemoveOrderedMeal(int id)
+        {
+            using (var conn = new RestaurantEntities())
+            {
+                var orderToRemove = conn.tblMealOrders.FirstOrDefault(o => o.OrderID == id);
+                if (orderToRemove != null)
+                {
+                    conn.tblMealOrders.Remove(orderToRemove);
+                    conn.SaveChanges();
+                }
+
+            }
+        }
+
         public void UpdateOrder(tblOrder updatedOrder)
         {
             using (var conn = new RestaurantEntities())
@@ -104,13 +119,10 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.DBHaendlers
                 if(order != null)
                 {
                     order.Price = updatedOrder.Price;
-                    order.tblMealOrders = updatedOrder.tblMealOrders;
-                    order.AddressOfRecipient = updatedOrder.AddressOfRecipient;
-                    order.DateOfOrder = order.DateOfOrder;
                     conn.SaveChanges();
                 }
             }
-        }
-        
+        }             
+
     }
 }

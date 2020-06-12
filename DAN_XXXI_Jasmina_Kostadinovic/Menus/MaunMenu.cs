@@ -38,9 +38,31 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             var db = new DataAccess();
                             var orders = db.LoadOrders();
 
-                            foreach(var order in orders)
+                            if (!orders.Any())
+                            {
+                                Console.WriteLine("There are no available orders to be shown.");
+                                shouldRepeat = true;
+                                continue;
+                            }
+                            var mealsWithOrders = db.LoadOrdersAndMeals();
+                            foreach (var order in orders)
                             {
                                 Console.WriteLine($"Order id: {order.OrderID}, address: {order.AddressOfRecipient}, price: {order.Price}");
+                                if (mealsWithOrders.Any())
+                                {
+                                    var mealsIds = mealsWithOrders.Where(m => m.OrderID == order.OrderID).ToList();
+                                    var meals = new List<tblMeal>();
+                                    foreach (var meal in mealsIds)
+                                        meals.Add(db.LoadMeal(meal.MealID));
+
+                                    Console.WriteLine("Your order include:");
+                                    var no = 1;
+                                    foreach (var meal in meals)
+                                    {
+                                        Console.WriteLine($"{no}. {meal.Name}");
+                                        no++;
+                                    }
+                                }
                             }
                         }
                       
@@ -65,9 +87,28 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             var db = new DataAccess();
 
                             var order = db.LoadOrder(orderID);
+                            var mealsWithOrders = db.LoadOrdersAndMeals();                       
+                     
+
                             if(order != null)
                             {
                                 Console.WriteLine($"Order id: {order.OrderID}, address: {order.AddressOfRecipient}, price: {order.Price}");
+                                if (mealsWithOrders.Any())
+                                {
+                                    var mealsIds = mealsWithOrders.Where(m => m.OrderID == orderID).ToList();
+                                    var meals = new List<tblMeal>();
+                                    foreach (var meal in mealsIds)
+                                        meals.Add(db.LoadMeal(meal.MealID));
+
+                                    Console.WriteLine("Your order include:");
+                                    var no = 1;
+                                    foreach (var meal in meals)
+                                    {
+                                        Console.WriteLine($"{no}. {meal.Name}");
+                                        no++;
+                                    }
+                                }
+
                             }
                             else
                             {
@@ -106,7 +147,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                 int serialNo = 1;
                                 foreach (var item in meals)
                                 {
-                                    Console.WriteLine($"{serialNo}. {item.Name}");
+                                    Console.WriteLine($"{serialNo}. {item.Name} - {item.Price} eur");
                                     serialNo++;
                                 }
                                 var inputForMealNo = GetMealNo(serialNo);
@@ -118,7 +159,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                 }
                                 var mealIndex = int.Parse(inputForMealNo) - 1;
                                 var meal = meals[mealIndex];
-                                Console.WriteLine($"Enter the amount of {meal.Name}");
+                                Console.WriteLine($"Enter the amount of {meal.Name} portions");
 
                                 var numberOfMeal = GetNumberOfMeal(meal.Name);
                                 if (numberOfMeal == "#")
@@ -128,7 +169,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                     continue;
                                 }
                                 orderedMeals.Add(meal, int.Parse(numberOfMeal));
-                                Console.WriteLine("Would you like to order more meals?");
+                                Console.WriteLine("Would you like to order more meals? (yes/no)");
                                 var moreMeals = CheckToContinue();
                                 if (numberOfMeal == "#")
                                 {
@@ -181,7 +222,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             var no = 1;
                             foreach (var meal in orderedMeals)
                             {
-                                Console.WriteLine($"{no}. {meal.Key.Name} - {meal.Value} times");
+                                Console.WriteLine($"{no}. {meal.Key.Name} - {meal.Value} portions");
                                 no++;
                             }
                         }
@@ -216,52 +257,92 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             if (updateOrder == null)
                             {
                                 Console.WriteLine("There is no order with this ID");
+                                shouldRepeat = true;
+                                continue;
                             }
 
                           List <tblMeal> meals = da.LoadMeals();
-
-                          
-                            foreach (var meal in meals)
-                            {
-                                Console.WriteLine(meal.MealID + " " + meal.Name + " " + meal.Price + " eur");
-                            }
-                            int mealId;
-                            string answer;
-
+                                                     
+                            bool stopOrdering = false;
+                            var orderedMeals = new Dictionary<tblMeal, int>();
                             do
                             {
-                                Console.WriteLine("Chose meal ID:");
-                                tblMeal mealToAdd = new tblMeal();
-                                do
+                                stopOrdering = false;
+                                Console.WriteLine("Please, enter the serial number of the meal you would like to order:");
+                                int serialNo = 1;
+                                foreach (var item in meals)
                                 {
+                                    Console.WriteLine($"{serialNo}. {item.Name} - {item.Price} eur");
+                                    serialNo++;
+                                }
+                                var inputForMealNo = GetMealNo(serialNo);
+                                if (inputForMealNo == "#")
+                                {
+                                    shouldRepeat = true;
+                                    stopOrdering = true;
+                                    continue;
+                                }
+                                var mealIndex = int.Parse(inputForMealNo) - 1;
+                                var meal = meals[mealIndex];
+                                Console.WriteLine($"Enter the amount of {meal.Name} portions");
 
-                                    success = Int32.TryParse(Console.ReadLine(), out mealId);
+                                var numberOfMeal = GetNumberOfMeal(meal.Name);
+                                if (numberOfMeal == "#")
+                                {
+                                    shouldRepeat = true;
+                                    stopOrdering = true;
+                                    continue;
+                                }
+                                orderedMeals.Add(meal, int.Parse(numberOfMeal));
+                                Console.WriteLine("Would you like to order more meals? (yes/no)");
+                                var moreMeals = CheckToContinue();
+                                if (numberOfMeal == "#")
+                                {
+                                    shouldRepeat = true;
+                                    stopOrdering = true;
+                                    continue;
+                                }
+                                if (moreMeals == "yes")
+                                {
+                                    stopOrdering = false;
+                                    meals.Remove(meal);
+                                    if (!meals.Any())
+                                    {
+                                        stopOrdering = true;
+                                        Console.WriteLine("There are no more meals on the menu.");
+                                    }
+                                    continue;
+                                }
+                                stopOrdering = true;
+                            }
+                            while (!stopOrdering);
 
-                                    if (!success)
-                                    {
-                                        Console.WriteLine("invalid input");
-                                    }
-                                    if (success)
-                                    {
-                                        mealToAdd = da.LoadMeal(mealId);
-                                        if (mealToAdd == null)
-                                        {
-                                            Console.WriteLine("Meal with this id doesnt exist");
-                                        }
-                                        else
-                                        {
-                                             tblMealOrder mealOrder = new tblMealOrder();
-                                             mealOrder.tblMeal = mealToAdd;
-                                             mealOrder.tblOrder = updateOrder;
-                                            //updateOrder.tblMealOrders.Add(mealOrder);
-                                        }
-                                    }
-                                } while (!success || mealToAdd == null);
-                                Console.WriteLine("You ordered {0}", mealToAdd.Name);
-                                Console.WriteLine("Do you want to order something else? y/n");
-                                answer = Console.ReadLine();
-                            } while (answer.Equals("y")||answer.Equals("Y"));
-                           
+                            updateOrder.Price = CalculatePrice(orderedMeals);
+
+                            da.UpdateOrder(updateOrder);
+
+                            var oldOrderedMeals = da.LoadOrdersAndMeals().Where(o => o.OrderID == updateOrder.OrderID).ToList();
+
+                            foreach(var o in oldOrderedMeals)
+                            {
+                                da.RemoveOrderedMeal(o.OrderID);
+                            }
+                            foreach (var meal in orderedMeals)
+                            {
+                                var mealOrder = new tblMealOrder();
+                                mealOrder.OrderID = updateOrder.OrderID;
+                                mealOrder.MealID = meal.Key.MealID;
+                                da.AddNewOrderedMeal(mealOrder);
+                            }
+
+                            Console.WriteLine($"You have successfully updated the order with id {updateOrder.OrderID}");
+                            Console.WriteLine("Your order now include:");
+                            var no = 1;
+                            foreach (var meal in orderedMeals)
+                            {
+                                Console.WriteLine($"{no}. {meal.Key.Name} - {meal.Value} portions");
+                                no++;
+                            }
 
                         }
                   
@@ -444,7 +525,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
             decimal? sum = 0;
             foreach (var m in meals)
             {
-                sum = m.Key.Price * m.Value;
+                sum += m.Key.Price * m.Value;
             }
             return (decimal)sum;
 

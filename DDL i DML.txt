@@ -26,7 +26,7 @@ CREATE TABLE tblMeal
 
 	CREATE TABLE tblOrder
 	(OrderID int primary key identity(1,1),
-	DateOfOrder datetime,
+	DateOfOrder datetime not null,
 	AddressOfRecipient nvarchar(100),
 	Price decimal);
 
@@ -42,11 +42,21 @@ INSERT INTO [dbo].[tblMeal]
            ,[Price])
      VALUES
            ('meal no 1'
-           ,9.99),
+           ,9.99);
+
+INSERT INTO [dbo].[tblMeal]
+           ([Name]
+           ,[Price])
+     VALUES
 		    ('meal no 2'
-           ,12.99),
+           ,12.99);
+
+INSERT INTO [dbo].[tblMeal]
+           ([Name]
+           ,[Price])
+     VALUES
 		    ('meal no 3'
-           ,5.99)
+           ,5.99);
 
 
 INSERT INTO [dbo].[tblOrder]
@@ -55,19 +65,27 @@ INSERT INTO [dbo].[tblOrder]
      VALUES
            ('2018-06-12 10:34:09 AM'
            ,'Kosovska 1'
-           ),
+           );
+
+INSERT INTO [dbo].[tblOrder]
+           ([DateOfOrder]
+           ,[AddressOfRecipient])
+     VALUES
 		    ('2018-05-12 10:34:09 AM'
            ,'Cara Dusana 1'
-           )
+           );
 
 INSERT INTO [dbo].[tblMealOrder]
            ([MealID]
            ,[OrderID])
      VALUES
            (1
-           ,1),
-		    (2
-           ,1),
-		    (2
-           ,1)
+           ,1);
+
+INSERT INTO [dbo].[tblMealOrder]
+           ([MealID]
+           ,[OrderID])
+     VALUES
+           (2
+           ,2);
 GO

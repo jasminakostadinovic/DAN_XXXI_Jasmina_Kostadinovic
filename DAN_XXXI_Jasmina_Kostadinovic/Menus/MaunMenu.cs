@@ -222,7 +222,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                           
                             foreach (var meal in meals)
                             {
-                                Console.WriteLine(meal.MealID + " " + meal.Name + " " + meal.Price);
+                                Console.WriteLine(meal.MealID + " " + meal.Name + " " + meal.Price + " eur");
                             }
                             int mealId;
                             string answer;
@@ -249,14 +249,14 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                         }
                                         else
                                         {
-                                            tblMealOrder mealOrder = new tblMealOrder();
-                                            mealOrder.tblMeal = mealToAdd;
-                                            mealOrder.tblOrder = updateOrder;
-                                            updateOrder.tblMealOrders.Add(mealOrder);
+                                             tblMealOrder mealOrder = new tblMealOrder();
+                                             mealOrder.tblMeal = mealToAdd;
+                                             mealOrder.tblOrder = updateOrder;
+                                            //updateOrder.tblMealOrders.Add(mealOrder);
                                         }
                                     }
                                 } while (!success || mealToAdd == null);
-                                Console.WriteLine("You ordered {0}", mealToAdd);
+                                Console.WriteLine("You ordered {0}", mealToAdd.Name);
                                 Console.WriteLine("Do you want to order something else? y/n");
                                 answer = Console.ReadLine();
                             } while (answer.Equals("y")||answer.Equals("Y"));

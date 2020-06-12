@@ -50,6 +50,14 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.DBHaendlers
             }
         }
 
+        public tblMeal LoadMeal(int id)
+        {
+            using (var conn = new RestaurantEntities())
+            {
+                return conn.tblMeals.FirstOrDefault(m => m.MealID == id);
+            }
+        }
+
         public void AddNewOrder(tblOrder order)
         {
             using (var conn = new RestaurantEntities())

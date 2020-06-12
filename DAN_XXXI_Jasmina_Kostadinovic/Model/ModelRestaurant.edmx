@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="RestaurantModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="RestaurantModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2005" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tblMeal">
           <Key>
             <PropertyRef Name="MealID" />
@@ -26,11 +26,11 @@
             <PropertyRef Name="OrderID" />
           </Key>
           <Property Name="OrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="DateOfOrder" Type="datetime" />
+          <Property Name="DateOfOrder" Type="datetime" Nullable="false" />
           <Property Name="AddressOfRecipient" Type="nvarchar" MaxLength="100" />
           <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
         </EntityType>
-        <Association Name="FK__tblMealOr__MealI__4BAC3F29">
+        <Association Name="FK__tblMealOr__MealI__108B795B">
           <End Role="tblMeal" Type="Self.tblMeal" Multiplicity="1" />
           <End Role="tblMealOrder" Type="Self.tblMealOrder" Multiplicity="*" />
           <ReferentialConstraint>
@@ -42,7 +42,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__tblMealOr__Order__4CA06362">
+        <Association Name="FK__tblMealOr__Order__117F9D94">
           <End Role="tblOrder" Type="Self.tblOrder" Multiplicity="1" />
           <End Role="tblMealOrder" Type="Self.tblMealOrder" Multiplicity="*" />
           <ReferentialConstraint>
@@ -58,17 +58,16 @@
           <EntitySet Name="tblMeal" EntityType="Self.tblMeal" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblMealOrder" EntityType="Self.tblMealOrder" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblOrder" EntityType="Self.tblOrder" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__tblMealOr__MealI__4BAC3F29" Association="Self.FK__tblMealOr__MealI__4BAC3F29">
+          <AssociationSet Name="FK__tblMealOr__MealI__108B795B" Association="Self.FK__tblMealOr__MealI__108B795B">
             <End Role="tblMeal" EntitySet="tblMeal" />
             <End Role="tblMealOrder" EntitySet="tblMealOrder" />
           </AssociationSet>
-          <AssociationSet Name="FK__tblMealOr__Order__4CA06362" Association="Self.FK__tblMealOr__Order__4CA06362">
+          <AssociationSet Name="FK__tblMealOr__Order__117F9D94" Association="Self.FK__tblMealOr__Order__117F9D94">
             <End Role="tblOrder" EntitySet="tblOrder" />
             <End Role="tblMealOrder" EntitySet="tblMealOrder" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="RestaurantModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -96,7 +95,7 @@
             <PropertyRef Name="OrderID" />
           </Key>
           <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DateOfOrder" Type="DateTime" Precision="3" />
+          <Property Name="DateOfOrder" Type="DateTime" Precision="3" Nullable="false" />
           <Property Name="AddressOfRecipient" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
           <NavigationProperty Name="tblMealOrders" Relationship="Self.FK__tblMealOr__Order__4CA06362" FromRole="tblOrder" ToRole="tblMealOrder" />

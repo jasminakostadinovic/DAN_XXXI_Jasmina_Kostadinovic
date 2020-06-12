@@ -56,7 +56,6 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
 
                         try
                         {
-                            tblMealOrder mealOrder;
                             int orderID;
                             do
                             {
@@ -119,7 +118,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                 }
                                 var mealIndex = int.Parse(inputForMealNo) - 1;
                                 var meal = meals[mealIndex];
-                                Console.WriteLine($"Enter the number of meal {meal.Name}");
+                                Console.WriteLine($"Enter the amount of {meal.Name}");
 
                                 var numberOfMeal = GetNumberOfMeal(meal.Name);
                                 if (numberOfMeal == "#")
@@ -168,6 +167,14 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             db.AddNewOrder(newOrder);
                             var orders = db.LoadOrders();
                             var idOrder = orders.Last().OrderID;
+
+                            foreach(var meal in orderedMeals)
+                            {
+                                var mealOrder = new tblMealOrder();
+                                mealOrder.OrderID = idOrder;
+                                mealOrder.MealID = meal.Key.MealID;
+                                db.AddNewOrderedMeal(mealOrder);
+                            }
 
                             Console.WriteLine($"You have successfully created new order with id {idOrder}");
                             Console.WriteLine("Your order include:");
@@ -269,7 +276,6 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                     case 5:
                         try
                         {
-                            tblMealOrder mealOrder;
                             int orderID;
                             do
                             {

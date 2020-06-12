@@ -21,7 +21,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Model
         }
     
         public int OrderID { get; set; }
-        public Nullable<System.DateTime> DateOfOrder { get; set; }
+        public System.DateTime DateOfOrder { get; set; }
         public string AddressOfRecipient { get; set; }
         public Nullable<decimal> Price { get; set; }
     

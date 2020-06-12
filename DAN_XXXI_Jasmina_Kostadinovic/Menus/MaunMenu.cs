@@ -35,19 +35,12 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                         
                         try
                         {
-                            List<tblMealOrder> mealOrder = new List<tblMealOrder>();
-                            using (var context = new RestaurantEntities())
+                            var db = new DataAccess();
+                            var orders = db.LoadOrders();
+
+                            foreach(var order in orders)
                             {
-                                mealOrder = context.tblMealOrders.Include("tblMeal.tblOrder").ToList();
-                            }
-                            foreach (var m in mealOrder)
-                            {
-                                Console.WriteLine("Meal with order number " + m.MealOrderID + " ordered on " + m.tblOrder.DateOfOrder + " to be delivered to adress " + m.tblOrder.AddressOfRecipient + " contains:");
-                                foreach (var item in m.tblOrder.tblMealOrders)
-                                {
-                                    Console.Write(item.tblMeal.Name);
-                                    Console.Write("/");
-                                }
+                                Console.WriteLine($"Order id: {order.OrderID}, address: {order.AddressOfRecipient}, price: {order.Price}");
                             }
                         }
                       
@@ -70,16 +63,18 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                                 Console.WriteLine("Please enter your order ID");
                             } while (int.TryParse(Console.ReadLine(),out orderID) != true);
 
-                            using (var context = new RestaurantEntities())
+                            var db = new DataAccess();
+
+                            var order = db.LoadOrder(orderID);
+                            if(order != null)
                             {
-                                mealOrder = context.tblMealOrders.Include("tblMeal.tblOrder").Where(m => m.MealOrderID == orderID).FirstOrDefault();
+                                Console.WriteLine($"Order id: {order.OrderID}, address: {order.AddressOfRecipient}, price: {order.Price}");
                             }
-                            Console.WriteLine("Meal with order number " + mealOrder.MealOrderID + " ordered on " + mealOrder.tblOrder.DateOfOrder + " to be delivered to adress " + mealOrder.tblOrder.AddressOfRecipient + " contains:");
-                            foreach (var item in mealOrder.tblOrder.tblMealOrders)
+                            else
                             {
-                                Console.Write(item.tblMeal.Name);
-                                Console.Write("/");
+                                Console.WriteLine($"There is no order with id {orderID}");
                             }
+
                         }
 
                         catch (Exception ex)
@@ -196,7 +191,6 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                         try
                         {
                             DataAccess da = new DataAccess();
-                          
                             bool success = false;
                             int ID;
                             do

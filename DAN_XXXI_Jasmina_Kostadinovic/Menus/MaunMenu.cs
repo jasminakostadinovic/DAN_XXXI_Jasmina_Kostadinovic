@@ -126,6 +126,8 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             }
                             while (!stopOrdering);
 
+                            var addressInput = GetAddress();
+
                             
                       
                             
@@ -184,6 +186,30 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                         break;
                 }
             } while (shouldRepeat);
+        }
+
+        private object GetAddress()
+        {
+            string consoleInput = string.Empty;
+            bool shouldRepeat;
+            do
+            {
+                shouldRepeat = false;
+                Console.WriteLine(">>>To get back to the menu press '#' + ENTER<<<");
+                consoleInput = Console.ReadLine();
+                //if the customer has chosen to abort the action
+                if (consoleInput == "#")
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(consoleInput))
+                {
+                    Console.WriteLine($"Wrong input! Plese try again.");
+                    shouldRepeat = true;
+                    continue;
+                }
+                shouldRepeat = false;
+            } while (shouldRepeat);
+            return consoleInput;
         }
 
         private string CheckToContinue()

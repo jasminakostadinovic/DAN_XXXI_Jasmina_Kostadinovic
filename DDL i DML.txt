@@ -1,0 +1,73 @@
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'Restaurant')
+	CREATE DATABASE Restaurant;
+
+GO
+USE Restaurant;
+
+--Droping tables
+	IF  EXISTS (SELECT * FROM sys.objects 
+	WHERE NAME = 'tblMealOrder')
+	DROP TABLE tblMealOrder;
+
+IF  EXISTS (SELECT * FROM sys.objects 
+	WHERE NAME = 'tblMeal')
+	DROP TABLE tblMeal;
+
+	IF  EXISTS (SELECT * FROM sys.objects 
+	WHERE NAME = 'tblOrder')
+	DROP TABLE tblOrder;
+
+	
+--Creating tables
+CREATE TABLE tblMeal
+	(MealID int primary key identity(1,1),
+	[Name] nvarchar(50),
+	Price decimal);
+
+	CREATE TABLE tblOrder
+	(OrderID int primary key identity(1,1),
+	DateOfOrder datetime,
+	AddressOfRecipient nvarchar(100),
+	Price decimal);
+
+	CREATE TABLE tblMealOrder
+	(MealOrderID int primary key identity(1,1),
+	MealID int foreign key(MealID) references tblMeal(MealID) not null,
+	OrderID int foreign key(OrderID) references tblOrder(OrderID) not null,
+	);
+
+
+INSERT INTO [dbo].[tblMeal]
+           ([Name]
+           ,[Price])
+     VALUES
+           ('meal no 1'
+           ,9.99),
+		    ('meal no 2'
+           ,12.99),
+		    ('meal no 3'
+           ,5.99)
+
+
+INSERT INTO [dbo].[tblOrder]
+           ([DateOfOrder]
+           ,[AddressOfRecipient])
+     VALUES
+           ('2018-06-12 10:34:09 AM'
+           ,'Kosovska 1'
+           ),
+		    ('2018-05-12 10:34:09 AM'
+           ,'Cara Dusana 1'
+           )
+
+INSERT INTO [dbo].[tblMealOrder]
+           ([MealID]
+           ,[OrderID])
+     VALUES
+           (1
+           ,1),
+		    (2
+           ,1),
+		    (2
+           ,1)
+GO

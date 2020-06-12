@@ -10,6 +10,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Hello world");
         }
     }
 }

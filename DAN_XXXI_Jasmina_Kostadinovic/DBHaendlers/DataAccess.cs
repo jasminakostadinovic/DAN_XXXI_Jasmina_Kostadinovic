@@ -7,6 +7,6 @@ using System.Threading.Tasks;
 namespace DAN_XXXI_Jasmina_Kostadinovic.DBHaendlers
 {
     class DataAccess
-    {
+    {        
     }
 }

@@ -274,21 +274,19 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                             do
                             {
                                 Console.WriteLine("Please enter the ID of the order you wish to delete");
-                            } while (int.TryParse(Console.ReadLine(), out orderID));
+                            } while (int.TryParse(Console.ReadLine(), out orderID) != true);
 
-                            using (var context = new RestaurantEntities())
+
+                            var db = new DataAccess();
+                            var orderToRemove = db.LoadOrder(orderID);
+
+                            if(orderToRemove == null)
                             {
-                                mealOrder = context.tblMealOrders.Include("tblMeal.tblOrder").Where(m => m.MealOrderID == orderID).FirstOrDefault();
-                                try
-                                {
-                                    context.tblMealOrders.Remove(mealOrder);
-                                }
-                                catch (SqlException sql)
-                                {
-                                    Console.WriteLine("Order with that ID doesn't exist in the database");
-                                    Console.WriteLine(sql.Message);
-                                }
-                                
+                                Console.WriteLine($"Order with ID '{orderID}' doesn't exist in the database");
+                            }
+                            else
+                            {
+                                db.RemoveOrder(orderID);
                                 Console.WriteLine("Meal Order removed successfully!");
                             }
                             

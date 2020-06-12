@@ -67,6 +67,26 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.DBHaendlers
             }
         }
 
+        public void RemoveOrder(int id)
+        {
+            using (var conn = new RestaurantEntities())
+            {
+                var orderToRemove = conn.tblOrders.FirstOrDefault(o => o.OrderID == id);
+                if(orderToRemove != null)
+                {
+                    if(conn.tblMealOrders.Any(m => m.OrderID == id))
+                    {
+                        var orders = conn.tblMealOrders.Where(m => m.OrderID == id).ToList();
+                        foreach (var order in orders)
+                            conn.tblMealOrders.Remove(order);
+                    }
+                    conn.tblOrders.Remove(orderToRemove);
+                    conn.SaveChanges();
+                }
+              
+            }
+        }
+
         public void AddNewOrderedMeal(tblMealOrder mealOrder)
         {
             using (var conn = new RestaurantEntities())

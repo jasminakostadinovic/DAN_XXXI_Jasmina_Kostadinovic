@@ -195,6 +195,72 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.Menus
                     case 4:
                         try
                         {
+                            DataAccess da = new DataAccess();
+                          
+                            bool success = false;
+                            int ID;
+                            do
+                            {
+                                Console.WriteLine("ID of order you want to update");
+                                success = Int32.TryParse(Console.ReadLine(), out ID);
+
+                                if (!success)
+                                {
+                                    Console.WriteLine("invalid input");
+                                }
+                            } while (!success);
+
+                            tblOrder updateOrder = da.LoadOrder(ID);
+
+                            if (updateOrder == null)
+                            {
+                                Console.WriteLine("There is no order with this ID");
+                            }
+
+                          List <tblMeal> meals = da.LoadMeals();
+
+                          
+                            foreach (var meal in meals)
+                            {
+                                Console.WriteLine(meal.MealID + " " + meal.Name + " " + meal.Price);
+                            }
+                            int mealId;
+                            string answer;
+
+                            do
+                            {
+                                Console.WriteLine("Chose meal ID:");
+                                tblMeal mealToAdd = new tblMeal();
+                                do
+                                {
+
+                                    success = Int32.TryParse(Console.ReadLine(), out mealId);
+
+                                    if (!success)
+                                    {
+                                        Console.WriteLine("invalid input");
+                                    }
+                                    if (success)
+                                    {
+                                        mealToAdd = da.LoadMeal(mealId);
+                                        if (mealToAdd == null)
+                                        {
+                                            Console.WriteLine("Meal with this id doesnt exist");
+                                        }
+                                        else
+                                        {
+                                            tblMealOrder mealOrder = new tblMealOrder();
+                                            mealOrder.tblMeal = mealToAdd;
+                                            mealOrder.tblOrder = updateOrder;
+                                            updateOrder.tblMealOrders.Add(mealOrder);
+                                        }
+                                    }
+                                } while (!success || mealToAdd == null);
+                                Console.WriteLine("You ordered {0}", mealToAdd);
+                                Console.WriteLine("Do you want to order something else? y/n");
+                                answer = Console.ReadLine();
+                            } while (answer.Equals("y")||answer.Equals("Y"));
+                           
 
                         }
                   

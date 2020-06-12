@@ -12,7 +12,7 @@ namespace DAN_XXXI_Jasmina_Kostadinovic.DBHaendlers
         public List<tblMeal> LoadMeals()
         {
             using(var conn = new RestaurantEntities())
-            {
+            {                
                 var meals = new List<tblMeal>();
                 if (conn.tblMeals.Any())
                     return conn.tblMeals.ToList();

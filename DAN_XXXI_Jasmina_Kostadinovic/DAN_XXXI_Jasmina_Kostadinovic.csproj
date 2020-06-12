@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBHaendlers\DataAccess.cs" />
+    <Compile Include="Menus\MaunMenu.cs" />
     <Compile Include="Model\ModelRestaurant.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
